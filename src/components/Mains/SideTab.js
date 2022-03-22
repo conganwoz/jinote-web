@@ -1,5 +1,5 @@
-import React from "react";
-import { AiOutlinePlus } from "react-icons/ai";
+import React from 'react';
+import { AiOutlinePlus } from 'react-icons/ai';
 
 class SideTab extends React.Component {
   constructor(props) {
@@ -8,24 +8,30 @@ class SideTab extends React.Component {
 
   render() {
     return (
-      <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", padding: 10 }}>
-        <div style={{}}>
-          <span style={{ fontSize: 30, fontWeight: 540, float: "left" }}>My Notes</span>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          alignItems: 'flex-start',
+          padding: 10
+        }}>
+        <div>
+          <span style={{ fontSize: 30, fontWeight: 540, float: 'left' }}>My Notes</span>
         </div>
 
-        <div style={{ marginTop: 50, width: '100%', }}>
+        <div style={{ marginTop: 50, width: '100%' }}>
           <div
+            className="add_new_note"
             style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "flex-start",
-              alignItems: "center",
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
               padding: 10,
-              background: "rgba(204,204,204,0.3)",
-              
+              background: 'rgba(204,204,204,0.3)',
               cursor: 'pointer'
-            }}
-          >
+            }}>
             <div>
               <AiOutlinePlus style={{ fontSize: 30 }} />
             </div>

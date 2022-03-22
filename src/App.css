@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+.add_new_note:hover {
+  background-color: rgba(204,204,204,0.7) !important;
+}
+
+.save-btn:hover {
+  background-color: #0050b3CC !important;
+}

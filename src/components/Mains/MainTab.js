@@ -1,5 +1,7 @@
-import React from "react";
-import { Editor } from "@tinymce/tinymce-react";
+import React from 'react';
+import { Editor } from '@tinymce/tinymce-react';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 
 class MainTab extends React.Component {
   constructor(props) {
@@ -10,9 +12,10 @@ class MainTab extends React.Component {
   saveContent = (e) => {
     e?.preventDefault();
     console.log('data__', this.currentEditor?.getContent());
-  }
+  };
 
   render() {
+    console.log('props__', this.props);
     return (
       <div>
         <Editor
@@ -23,21 +26,31 @@ class MainTab extends React.Component {
             height: 500,
             menubar: false,
             plugins: [
-              "advlist autolink lists link image charmap print preview anchor",
-              "searchreplace visualblocks code fullscreen",
-              "insertdatetime media table paste code help wordcount",
+              'advlist autolink lists link image charmap print preview anchor',
+              'searchreplace visualblocks code fullscreen',
+              'insertdatetime media table paste code help wordcount'
             ],
             toolbar:
-              "undo redo | formatselect | " +
-              "bold italic backcolor | alignleft aligncenter " +
-              "alignright alignjustify | bullist numlist outdent indent | " +
-              "removeformat | help",
-            content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+              'undo redo | formatselect | ' +
+              'bold italic backcolor | alignleft aligncenter ' +
+              'alignright alignjustify | bullist numlist outdent indent | ' +
+              'removeformat | help',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
           }}
         />
-        <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItems: "center", marginTop: 10 }}>
-          <div style={{ padding: 10, background: "#0050b3", marginRight: 10, cursor: "pointer" }} onClick={this.saveContent}>
-            <span style={{ color: "#fff" }}>Save</span>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            marginTop: 10
+          }}>
+          <div
+            className="save-btn"
+            style={{ padding: 10, background: '#0050b3', marginRight: 10, cursor: 'pointer' }}
+            onClick={this.saveContent}>
+            <span style={{ color: '#fff' }}>Save</span>
           </div>
         </div>
       </div>
@@ -45,4 +58,8 @@ class MainTab extends React.Component {
   }
 }
 
-export default MainTab;
+const structuredSelector = createStructuredSelector({
+  note: (state) => state.note
+});
+
+export default connect(structuredSelector, null)(MainTab);
