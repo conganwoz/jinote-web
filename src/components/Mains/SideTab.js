@@ -1,12 +1,22 @@
 import React from 'react';
 import { AiOutlinePlus } from 'react-icons/ai';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
+import { createTempNote } from '../../actions/note';
 
 class SideTab extends React.Component {
   constructor(props) {
     super(props);
   }
 
+  static propTypes = {
+    createTempNote: PropTypes.func
+  };
+
   render() {
+    const { createTempNote } = this.props;
+
     return (
       <div
         style={{
@@ -22,6 +32,7 @@ class SideTab extends React.Component {
 
         <div style={{ marginTop: 50, width: '100%' }}>
           <div
+            onClick={createTempNote}
             className="add_new_note"
             style={{
               display: 'flex',
@@ -45,6 +56,6 @@ class SideTab extends React.Component {
   }
 }
 
-export default SideTab;
+export default connect(null, { createTempNote })(SideTab);
 
 // chrome://flags/#enable-force-dark
