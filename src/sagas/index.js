@@ -1,7 +1,8 @@
-import { all } from 'redux-saga/effects';
+import { fork, all } from 'redux-saga/effects';
 
-import { noteConstants } from '../constants/note';
+import userSagas from './user';
+import noteSagas from './note';
 
 export default function* rootSaga() {
-  yield all([noteConstants.createTempNote, noteConstants.clearCurrentNote]);
+  yield all([fork(...userSagas), fork(...noteSagas)]);
 }

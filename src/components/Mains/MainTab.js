@@ -103,7 +103,6 @@ class MainTab extends React.Component {
         <Editor
           apiKey="5qvottucgw0p2qz0k8b0z8b6rp866s1yt3v2k6mjamp86cvv"
           onInit={(evt, editor) => {
-            console.log('in_here__');
             this.currentEditor = editor;
             this.setState({ isStartingTinyMCE: false });
           }}
