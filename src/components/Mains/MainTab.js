@@ -6,8 +6,9 @@ import PropTypes from 'prop-types';
 import { GoNote } from 'react-icons/go';
 import { isEqual } from 'lodash';
 import ReactLoading from 'react-loading';
+import dayjs from 'dayjs';
 
-import { createTempNote, clearCurrentNote } from '../../actions/note';
+import { createTempNote, clearCurrentNote, saveNote } from '../../actions/note';
 
 class MainTab extends React.Component {
   constructor(props) {
@@ -33,12 +34,23 @@ class MainTab extends React.Component {
 
   static propTypes = {
     note: PropTypes.object,
-    clearCurrentNote: PropTypes.func
+    clearCurrentNote: PropTypes.func,
+    saveNote: PropTypes.func
   };
 
   saveContent = (e) => {
+    const { saveNote } = this.props;
+    const { currentNote } = this.state;
     e?.preventDefault();
-    console.log('data__', this.currentEditor?.getContent());
+    const content = this.currentEditor?.getContent();
+
+    saveNote({
+      note: {
+        ...(currentNote || {}),
+        content: content,
+        createdAt: dayjs().format('DD/MM/YYYY HH:mm:ss')
+      }
+    });
   };
 
   render() {
@@ -84,6 +96,9 @@ class MainTab extends React.Component {
                 }}
                 defaultValue={currentNote?.title}
                 autoFocus
+                onChange={(e) =>
+                  this.setState({ currentNote: { ...currentNote, title: e?.target?.value || '' } })
+                }
               />
             </div>
           </div>
@@ -153,4 +168,4 @@ const structuredSelector = createStructuredSelector({
   note: (state) => state.note
 });
 
-export default connect(structuredSelector, { createTempNote, clearCurrentNote })(MainTab);
+export default connect(structuredSelector, { createTempNote, clearCurrentNote, saveNote })(MainTab);

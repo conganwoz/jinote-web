@@ -2,9 +2,11 @@ import React from 'react';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { createStructuredSelector } from 'reselect';
 
 import { createTempNote } from '../../actions/note';
 import { Account } from '../Users';
+import { NotesRender } from '../Notes';
 
 class SideTab extends React.Component {
   constructor(props) {
@@ -12,11 +14,12 @@ class SideTab extends React.Component {
   }
 
   static propTypes = {
+    note: PropTypes.object,
     createTempNote: PropTypes.func
   };
 
   render() {
-    const { createTempNote } = this.props;
+    const { createTempNote, note } = this.props;
 
     return (
       <>
@@ -54,6 +57,8 @@ class SideTab extends React.Component {
                 <span style={{ float: 'left' }}>Add new note</span>
               </div>
             </div>
+
+            <NotesRender notes={note?.noteData?.notes || []} />
           </div>
         </div>
         <Account />
@@ -62,6 +67,10 @@ class SideTab extends React.Component {
   }
 }
 
-export default connect(null, { createTempNote })(SideTab);
+const structuredSelector = createStructuredSelector({
+  note: (state) => state.note
+});
+
+export default connect(structuredSelector, { createTempNote })(SideTab);
 
 // chrome://flags/#enable-force-dark
