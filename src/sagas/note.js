@@ -1,5 +1,7 @@
 import { call, put, takeEvery } from 'redux-saga/effects';
+
 import { noteConstants } from '../constants/note';
+import { db } from '../database/db';
 
 export default [requestNote];
 
@@ -18,22 +20,7 @@ function* startRequest(payload) {
 function* saveNote({ payload }) {
   const { note } = payload;
   try {
-    let currentNotes = localStorage.getItem('local-notes');
-
-    if (!currentNotes) {
-      yield call(saveDataToStorage, 'local-notes', {
-        localNotes: {
-          notes: [note]
-        }
-      });
-    } else {
-      currentNotes = JSON.parse(currentNotes);
-      yield call(saveDataToStorage, 'local-notes', {
-        localNotes: {
-          notes: [note].concat(currentNotes?.localNotes?.notes || [])
-        }
-      });
-    }
+    yield call(saveDataToStorage, 'notes', note);
 
     yield put({ type: noteConstants.saveNoteSuccess, newNote: note });
 
@@ -45,9 +32,12 @@ function* saveNote({ payload }) {
   }
 }
 
-function saveDataToStorage(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
-
+async function saveDataToStorage(key, value) {
+  if (!value?.id) {
+    await db?.[key]?.add(value);
+  } else {
+    await db?.[key]?.update(value?.id, value);
+  }
   return value;
 }
 

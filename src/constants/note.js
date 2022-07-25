@@ -9,5 +9,9 @@ export const noteConstants = {
   fetchNotesFromLocalError: 'FETCH_NOTES_FROM_LOCAL_ERROR',
   saveNote: 'SAVE_NOTE',
   saveNoteSuccess: 'SAVE_NOTE_SUCCESS',
-  saveNoteError: 'SAVE_NOTE_ERROR'
+  saveNoteError: 'SAVE_NOTE_ERROR',
+  saveEditedNote: 'EDIT_NOTE',
+  saveEditedNoteSuccess: 'SAVE_EDITED_NOTED_SUCCESS',
+  saveEditedNoteError: 'SAVE_EDITED_NOTE_ERROR',
+  selectNote: 'SELECT_NOTE'
 };

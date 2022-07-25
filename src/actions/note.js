@@ -13,3 +13,8 @@ export const saveNote = (data) => ({
   type: noteConstants.saveNote,
   payload: data
 });
+
+export const selectNote = (data) => ({
+  type: noteConstants.selectNote,
+  payload: data
+});

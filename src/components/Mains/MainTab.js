@@ -27,7 +27,7 @@ class MainTab extends React.Component {
     if (!isEqual(note?.currentNote, prevProps?.note?.currentNote)) {
       this.setState({
         currentNote: note?.currentNote ? { ...note?.currentNote } : null,
-        isStartingTinyMCE: !!note?.currentNote
+        isStartingTinyMCE: !prevProps?.note?.currentNote
       });
     }
   }
@@ -43,12 +43,14 @@ class MainTab extends React.Component {
     const { currentNote } = this.state;
     e?.preventDefault();
     const content = this.currentEditor?.getContent();
+    const saveAt = dayjs().format('DD/MM/YYYY HH:mm:ss');
 
     saveNote({
       note: {
         ...(currentNote || {}),
         content: content,
-        createdAt: dayjs().format('DD/MM/YYYY HH:mm:ss')
+        insertedAt: saveAt,
+        updatedAt: saveAt
       }
     });
   };
@@ -95,6 +97,7 @@ class MainTab extends React.Component {
                   fontSize: 15
                 }}
                 defaultValue={currentNote?.title}
+                value={currentNote?.title || ''}
                 autoFocus
                 onChange={(e) =>
                   this.setState({ currentNote: { ...currentNote, title: e?.target?.value || '' } })
@@ -136,6 +139,10 @@ class MainTab extends React.Component {
               'alignright alignjustify | bullist numlist outdent indent | ' +
               'removeformat | help',
             content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+          }}
+          value={currentNote?.content}
+          onEditorChange={(content) => {
+            this.setState({ currentNote: { ...(currentNote || {}), content: content } });
           }}
         />
         <div

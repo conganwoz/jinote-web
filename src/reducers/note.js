@@ -42,7 +42,8 @@ const noteReducer = (state = initialState, action) => {
         noteData: {
           isFetching: { $set: true },
           success: { $set: false },
-          message: { $set: '' }
+          message: { $set: '' },
+          notes: { $set: action?.payload || [] }
         }
       });
     }
@@ -81,6 +82,7 @@ const noteReducer = (state = initialState, action) => {
 
     case noteConstants.saveNoteSuccess: {
       const { newNote } = action;
+      const idx = state?.noteData?.note?.findIndex((item) => item?.id == newNote?.id);
       return update(state, {
         saveNote: {
           isSaving: { $set: false },
@@ -88,7 +90,7 @@ const noteReducer = (state = initialState, action) => {
           message: { $set: 'Your note has been saved' }
         },
         noteData: {
-          notes: { $splice: [[0, 0, newNote]] }
+          notes: { $splice: idx === -1 ? [[0, 0, newNote]] : [[idx, 1, newNote]] }
         }
       });
     }
@@ -100,6 +102,12 @@ const noteReducer = (state = initialState, action) => {
           success: { $set: false },
           message: { $set: 'Failed, Can not save your note! Please try later.' }
         }
+      });
+    }
+
+    case noteConstants.selectNote: {
+      return update(state, {
+        currentNote: { $set: action?.payload || null }
       });
     }
 
