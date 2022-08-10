@@ -43,7 +43,12 @@ async function saveDataToStorage(key, value) {
 
 export function* requestNote() {
   yield takeEvery(
-    [noteConstants.createTempNote, noteConstants.clearCurrentNote, noteConstants.saveNote],
+    [
+      noteConstants.createTempNote,
+      noteConstants.clearCurrentNote,
+      noteConstants.saveNote,
+      noteConstants.uploadToCloud
+    ],
     startRequest
   );
 }

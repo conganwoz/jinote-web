@@ -13,5 +13,8 @@ export const noteConstants = {
   saveEditedNote: 'EDIT_NOTE',
   saveEditedNoteSuccess: 'SAVE_EDITED_NOTED_SUCCESS',
   saveEditedNoteError: 'SAVE_EDITED_NOTE_ERROR',
-  selectNote: 'SELECT_NOTE'
+  selectNote: 'SELECT_NOTE',
+  uploadToCloud: 'UPLOAD_NOTE_TO_CLOUD',
+  uploadToCloudSuccess: 'UPLOAD_NOTE_TO_CLOUD_SUCCESS',
+  uploadToCloudError: 'UPLOAD_NOTE_TO_CLOUD_ERROR'
 };

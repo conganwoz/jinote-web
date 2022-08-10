@@ -8,6 +8,7 @@ import { db } from '../../database/db';
 import { createTempNote, fetchNotesFromLocal, selectNote } from '../../actions/note';
 import { Account } from '../Users';
 import { NotesRender } from '../Notes';
+import { SideBarMenu } from '../Menu';
 
 function SideTab({ createTempNote, note, fetchNotesFromLocal, selectNote }) {
   useEffect(async () => {
@@ -27,8 +28,20 @@ function SideTab({ createTempNote, note, fetchNotesFromLocal, selectNote }) {
           width: '95%',
           flexGrow: 1
         }}>
-        <div>
-          <span style={{ fontSize: 30, fontWeight: 540, float: 'left' }}>My Notes</span>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%'
+          }}>
+          <div style={{ flexGrow: 1, flex: 1 }}>
+            <span style={{ fontSize: 30, fontWeight: 540, float: 'left' }}>My Notes</span>
+          </div>
+          <div>
+            <SideBarMenu />
+          </div>
         </div>
 
         <div style={{ marginTop: 50, width: '100%' }}>
