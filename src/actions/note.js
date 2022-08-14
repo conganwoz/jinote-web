@@ -18,3 +18,8 @@ export const selectNote = (data) => ({
   type: noteConstants.selectNote,
   payload: data
 });
+
+export const uploadNoteToCloud = (data) => ({
+  type: noteConstants.uploadNoteToCloud,
+  payload: data
+});

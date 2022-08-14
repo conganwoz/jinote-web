@@ -15,6 +15,12 @@ const initialState = {
     success: false,
     message: '',
     currentSaveNote: null
+  },
+  uploadToCloud: {
+    isUploading: false,
+    message: '',
+    success: false,
+    data: null
   }
 };
 
@@ -82,7 +88,7 @@ const noteReducer = (state = initialState, action) => {
 
     case noteConstants.saveNoteSuccess: {
       const { newNote } = action;
-      const idx = state?.noteData?.note?.findIndex((item) => item?.id == newNote?.id);
+      const idx = state?.noteData?.notes?.findIndex((item) => item?.id == newNote?.id);
       return update(state, {
         saveNote: {
           isSaving: { $set: false },
@@ -108,6 +114,36 @@ const noteReducer = (state = initialState, action) => {
     case noteConstants.selectNote: {
       return update(state, {
         currentNote: { $set: action?.payload || null }
+      });
+    }
+
+    case noteConstants.uploadToCloud: {
+      return update(state, {
+        uploadToCloud: {
+          isUploading: { $set: true },
+          message: { $set: '' },
+          success: { $set: false }
+        }
+      });
+    }
+
+    case noteConstants.uploadToCloudSuccess: {
+      return update(state, {
+        uploadToCloud: {
+          isUploading: { $set: false },
+          message: { $set: action?.message },
+          success: { $set: true }
+        }
+      });
+    }
+
+    case noteConstants.uploadToCloudError: {
+      return update(state, {
+        uploadToCloud: {
+          isUploading: { $set: false },
+          message: { $set: action?.message },
+          success: { $set: false }
+        }
       });
     }
 
