@@ -20,9 +20,9 @@ function* startRequest(payload) {
 function* saveNote({ payload }) {
   const { note } = payload;
   try {
-    yield call(saveDataToStorage, 'notes', note);
+    const newNote = yield call(saveDataToStorage, 'notes', note);
 
-    yield put({ type: noteConstants.saveNoteSuccess, newNote: note });
+    yield put({ type: noteConstants.saveNoteSuccess, newNote: newNote });
 
     return note;
   } catch (error) {
@@ -33,8 +33,22 @@ function* saveNote({ payload }) {
 }
 
 async function saveDataToStorage(key, value) {
-  if (!value?.id) {
-    await db?.[key]?.add(value);
+  if (!value?.id && !value?.cloudId) {
+    const id = await db?.[key]?.add(value);
+    value.id = id;
+  } else if (value?.cloudId) {
+    const notes = await db?.[key]?.where({ cloudId: value?.cloudId || '' }).toArray();
+    if (notes?.length == 0) {
+      await db?.[key]?.add(value);
+    } else {
+      await db?.[key]?.update(notes?.[0]?.id, {
+        ...(notes?.[0] || {}),
+        ...(value || {}),
+        id: notes?.[0]?.id
+      });
+
+      return { ...(notes?.[0] || {}), ...(value || {}), id: notes?.[0]?.id };
+    }
   } else {
     await db?.[key]?.update(value?.id, value);
   }

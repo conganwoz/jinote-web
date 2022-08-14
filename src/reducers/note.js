@@ -88,7 +88,7 @@ const noteReducer = (state = initialState, action) => {
 
     case noteConstants.saveNoteSuccess: {
       const { newNote } = action;
-      const idx = state?.noteData?.note?.findIndex((item) => item?.id == newNote?.id);
+      const idx = state?.noteData?.notes?.findIndex((item) => item?.id == newNote?.id);
       return update(state, {
         saveNote: {
           isSaving: { $set: false },
