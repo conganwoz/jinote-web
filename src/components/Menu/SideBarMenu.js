@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import dayjs from 'dayjs';
 
 import { UploadProgress } from '../Common';
+import { P2PSender } from '../DataTransfer';
 import { API_URL } from '../../env-config';
 import { db } from '../../database/db';
 import { saveNote } from '../../actions/note';
@@ -17,6 +18,7 @@ function SideBarMenu({ selectedNotes, saveNote }) {
   const [visibleModal, setVisible] = useState(false);
   const [isDownloadNotes, setIsDownloadNote] = useState(false);
   const [isFetchingCloudNotes, setFetchingCloudNotes] = useState(false);
+  const [isVisibleP2PTransder, setVisibleP2PTransfer] = useState(false);
   const closeUploadCloud = () => setIsUploadCloud(false);
 
   const openModal = () => setVisible(true);
@@ -103,6 +105,10 @@ function SideBarMenu({ selectedNotes, saveNote }) {
       setFetchingCloudNotes(false);
     }
   };
+
+  const openModalP2PTransfer = () => setVisibleP2PTransfer(true);
+  const closeModalP2PTransfer = () => setVisibleP2PTransfer(false);
+
   return (
     <>
       <div style={{ cursor: 'pointer' }}>
@@ -127,6 +133,11 @@ function SideBarMenu({ selectedNotes, saveNote }) {
                       setIsDownloadNote(true);
                       openModal();
                     }
+                  },
+                  {
+                    key: '3',
+                    label: 'Chuyển dữ liệu P2P',
+                    onClick: openModalP2PTransfer
                   }
                 ]}
               />
@@ -186,6 +197,11 @@ function SideBarMenu({ selectedNotes, saveNote }) {
           onChange={(e) => setPassword(e?.target?.value)}
         />
       </Modal>
+      <P2PSender
+        selectedNotes={selectedNotes}
+        visible={isVisibleP2PTransder}
+        onClose={closeModalP2PTransfer}
+      />
     </>
   );
 }
