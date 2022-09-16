@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal } from 'antd';
+import { Modal, Input, message } from 'antd';
 import PropTypes from 'prop-types';
 let remoteConnection;
 let receiveChannel;
@@ -7,15 +7,15 @@ let receiveChannel;
 export class P2PReceiver extends Component {
   constructor(props) {
     super(props);
-    this.state = { tunnelId: '123', currentICECandidateEvent: null };
+    this.state = { tunnelId: null, currentICECandidateEvent: null, messageStatus: null };
   }
 
-  componentDidUpdate(prevProps) {
-    const { visible } = this.props;
-    if (prevProps.visible != visible && visible) {
-      this.bootUpPeer();
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   const { visible } = this.props;
+  //   if (prevProps.visible != visible && visible) {
+  //     this.bootUpPeer();
+  //   }
+  // }
 
   createConnection = () => {
     const servers = null;
@@ -25,6 +25,8 @@ export class P2PReceiver extends Component {
     remoteConnection.onicecandidate = (e) => {
       this.onIceCandidate(e);
     };
+
+    this.setState({ messageStatus: 'Đã tạo kết nối cục bộ' });
 
     remoteConnection.ondatachannel = this.receiveChannelCallback;
   };
@@ -38,6 +40,8 @@ export class P2PReceiver extends Component {
   };
 
   onReceiveMessageCallback = (event) => {
+    message.success('Đã nhận được dữ liệu');
+    this.setState({ messageStatus: 'Đã nhận được dữ liệu' });
     console.log('Received Message', JSON.parse(event.data));
   };
 
@@ -91,6 +95,7 @@ export class P2PReceiver extends Component {
           .addIceCandidate(new RTCIceCandidate(data.candidate))
           .then(this.onAddIceCandidateSuccess, this.onAddIceCandidateError);
       } else if (data?.message_type == 'sender_desc') {
+        this.setState({ messageStatus: 'Máy gửi đã gửi yêu cầu chuyển dữ liệu' });
         this.addRemoteDesc(data);
       }
     };
@@ -135,9 +140,37 @@ export class P2PReceiver extends Component {
 
   render() {
     const { visible, onClose } = this.props;
+    const { tunnelId, messageStatus } = this.state;
     return (
-      <Modal title="Đồng bộ dữ liệu ngang hàng (P2P)" visible={visible} onCancel={onClose}>
-        <div>Receiver P2P</div>
+      <Modal
+        title="Đồng bộ dữ liệu ngang hàng (P2P)"
+        visible={visible}
+        onCancel={onClose}
+        cancelText="Huỷ"
+        okText="Nhận dữ liệu"
+        onOk={() => {
+          if (!tunnelId) return message.error('Vui lòng nhập mã nhận dữ liệu');
+
+          this.bootUpPeer();
+        }}>
+        <div>
+          <div>
+            <span style={{ fontSize: 11 }}>Mã nhận dữ liệu:</span>
+          </div>
+          <Input
+            placeholder="AD123"
+            value={tunnelId}
+            onChange={(e) => {
+              this.setState({ tunnelId: e?.target?.value });
+            }}
+          />
+
+          <div style={{ marginTop: 10 }}>
+            {messageStatus ? (
+              <span style={{ fontSize: 11, color: 'rgba(119,119,119,0.9)' }}>{messageStatus}</span>
+            ) : null}
+          </div>
+        </div>
       </Modal>
     );
   }

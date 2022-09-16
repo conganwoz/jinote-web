@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal } from 'antd';
+import { Modal, Divider } from 'antd';
 import PropTypes from 'prop-types';
 
 import { makeId } from '../../utils';
@@ -10,7 +10,12 @@ let sendChannel;
 export default class P2PSender extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { tunnelId: null, currentICECandidateEvent: null, description: null };
+    this.state = {
+      tunnelId: null,
+      currentICECandidateEvent: null,
+      description: null,
+      messageStatus: null
+    };
   }
 
   componentDidUpdate(prevProps) {
@@ -41,6 +46,7 @@ export default class P2PSender extends React.Component {
           console.log('peer_1_data_receive__', data);
           if (data?.message_type == 'receiver_connected') {
             console.log('in_boot_rtc_connection_');
+            this.setState({ messageStatus: 'Máy nhận đã kết nối' });
             this.createConnection();
           } else if (data?.message_type == 'receiver_ice_candidate') {
             console.log('ice_candidate__', data);
@@ -48,6 +54,7 @@ export default class P2PSender extends React.Component {
               .addIceCandidate(new RTCIceCandidate(data.candidate))
               .then(this.onAddIceCandidateSuccess, this.onAddIceCandidateError);
           } else if (data?.message_type == 'receiver_desc') {
+            this.setState({ messageStatus: 'Máy nhận xác nhận nhận dữ liệu' });
             console.log('receiver_desc__', data);
             localConnection.setRemoteDescription(new RTCSessionDescription(data?.description));
           }
@@ -76,6 +83,8 @@ export default class P2PSender extends React.Component {
     sendChannel = localConnection.createDataChannel('sendDataChannel');
     console.log('Created send data channel');
 
+    this.setState({ messageStatus: 'Đã tạo kết nối cục bộ' });
+
     localConnection.onicecandidate = (e) => {
       this.onIceCandidate(e);
     };
@@ -92,7 +101,8 @@ export default class P2PSender extends React.Component {
     console.log(`Offer from localConnection\n${desc.sdp}`);
 
     this.setState({
-      description: desc
+      description: desc,
+      messageStatus: 'Tạo và gửi Offer RTCSession'
     });
 
     this.tunnelSocket.send(
@@ -114,6 +124,8 @@ export default class P2PSender extends React.Component {
 
     this.setState({ currentICECandidateEvent: event });
 
+    this.setState({ messageStatus: 'Đã nhận ICE Candidate' });
+
     this.tunnelSocket.send(
       JSON.stringify({
         message_type: 'sender_ice_candidate',
@@ -129,6 +141,9 @@ export default class P2PSender extends React.Component {
 
     if (readyState === 'open') {
       console.log('Ready send data');
+      this.setState({
+        messageStatus: 'Sẵn sàng gửi dữ liệu. Vui lòng kiểm tra kết quả ở máy nhận'
+      });
       this.sendData();
     }
   };
@@ -159,9 +174,25 @@ export default class P2PSender extends React.Component {
 
   render() {
     const { visible, onClose } = this.props;
+    const { tunnelId, messageStatus } = this.state;
     return (
       <Modal title="Đồng bộ dữ liệu ngang hàng (P2P)" visible={visible} onCancel={onClose}>
-        <div>Transfer P2P</div>
+        <div>
+          <div>
+            Mã nhận dữ liệu: <span style={{ fontWeight: 900, color: '#000' }}>{tunnelId}</span>
+          </div>
+          <div>
+            <span style={{ fontSize: 11, color: 'rgba(119,119,119,0.9)' }}>
+              (Vui lòng nhập mã này trên máy bạn muốn nhận ghi chú đến)
+            </span>
+          </div>
+          <Divider />
+          <div>
+            {messageStatus ? (
+              <span style={{ fontSize: 11, color: 'rgba(119,119,119,0.9)' }}>{messageStatus}</span>
+            ) : null}
+          </div>
+        </div>
       </Modal>
     );
   }

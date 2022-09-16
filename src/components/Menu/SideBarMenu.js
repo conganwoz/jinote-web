@@ -134,6 +134,9 @@ function SideBarMenu({ selectedNotes, saveNote }) {
                     key: '2',
                     label: 'Tải xuống note',
                     onClick: () => {
+                      if (selectedNotes?.length <= 0)
+                        return message.warning('Vui lòng chọn note bạn muốn tải xuống');
+
                       setIsDownloadNote(true);
                       openModal();
                     }
@@ -141,7 +144,11 @@ function SideBarMenu({ selectedNotes, saveNote }) {
                   {
                     key: '3',
                     label: 'Chuyển dữ liệu P2P',
-                    onClick: openModalP2PTransfer
+                    onClick: () => {
+                      if (selectedNotes?.length <= 0)
+                        return message.warning('Vui lòng chọn note bạn muốn gửi');
+                      openModalP2PTransfer();
+                    }
                   },
                   {
                     key: '4',
