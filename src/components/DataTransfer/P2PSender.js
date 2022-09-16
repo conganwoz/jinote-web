@@ -2,16 +2,71 @@ import React from 'react';
 import { Modal } from 'antd';
 import PropTypes from 'prop-types';
 
+import { makeId } from '../../utils';
+
 let localConnection;
 let sendChannel;
 
 export default class P2PSender extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { tunnelId: null, currentICECandidateEvent: null, description: null };
+  }
+
   componentDidUpdate(prevProps) {
     const { visible } = this.props;
     if (prevProps.visible != visible && visible) {
-      this.createConnection();
+      this.bootUpPeer();
     }
   }
+
+  bootUpPeer = () => {
+    this.initTunnelSocket();
+  };
+
+  initTunnelSocket = () => {
+    const tunnelId = makeId();
+    this.setState(
+      {
+        tunnelId: tunnelId,
+        currentICECandidateEvent: null
+      },
+      () => {
+        this.tunnelSocket = new WebSocket(
+          'ws://' + 'localhost:8000' + '/ws/chat/' + tunnelId + '/'
+        );
+
+        this.tunnelSocket.onmessage = (e) => {
+          const data = JSON.parse(e.data);
+          console.log('peer_1_data_receive__', data);
+          if (data?.message_type == 'receiver_connected') {
+            console.log('in_boot_rtc_connection_');
+            this.createConnection();
+          } else if (data?.message_type == 'receiver_ice_candidate') {
+            console.log('ice_candidate__', data);
+            localConnection
+              .addIceCandidate(new RTCIceCandidate(data.candidate))
+              .then(this.onAddIceCandidateSuccess, this.onAddIceCandidateError);
+          } else if (data?.message_type == 'receiver_desc') {
+            console.log('receiver_desc__', data);
+            localConnection.setRemoteDescription(new RTCSessionDescription(data?.description));
+          }
+        };
+
+        this.tunnelSocket.onclose = (e) => {
+          console.error('Chat socket closed unexpectedly', e);
+        };
+      }
+    );
+  };
+
+  onAddIceCandidateSuccess = () => {
+    console.log('AddIceCandidate success.');
+  };
+
+  onAddIceCandidateError = (error) => {
+    console.log(`Failed to add Ice Candidate: ${error.toString()}`);
+  };
 
   createConnection = () => {
     const servers = null;
@@ -32,15 +87,40 @@ export default class P2PSender extends React.Component {
   };
 
   gotDescription = (desc) => {
+    console.log('real_desc__', desc);
     localConnection.setLocalDescription(desc);
     console.log(`Offer from localConnection\n${desc.sdp}`);
+
+    this.setState({
+      description: desc
+    });
+
+    this.tunnelSocket.send(
+      JSON.stringify({
+        message_type: 'sender_desc',
+        description: desc
+      })
+    );
 
     // send desc to remote
   };
 
   onIceCandidate = (event) => {
     // send ICE candidate to remote
-    console.log('event__', event);
+
+    console.log('event_candidate__', event.candidate);
+
+    if (!event?.candidate) return;
+
+    this.setState({ currentICECandidateEvent: event });
+
+    this.tunnelSocket.send(
+      JSON.stringify({
+        message_type: 'sender_ice_candidate',
+        candidate: event.candidate,
+        message: 'new_ice_candidate'
+      })
+    );
   };
 
   onSendChannelStateChange = () => {
@@ -49,6 +129,7 @@ export default class P2PSender extends React.Component {
 
     if (readyState === 'open') {
       console.log('Ready send data');
+      this.sendData();
     }
   };
 
@@ -64,9 +145,20 @@ export default class P2PSender extends React.Component {
     localConnection = null;
   };
 
+  sendData = () => {
+    const { selectedNotes } = this.props;
+
+    sendChannel.send(
+      JSON.stringify({
+        notes: selectedNotes
+      })
+    );
+
+    console.log('Sent Data');
+  };
+
   render() {
     const { visible, onClose } = this.props;
-    console.log('prpos__', this.props);
     return (
       <Modal title="Đồng bộ dữ liệu ngang hàng (P2P)" visible={visible} onCancel={onClose}>
         <div>Transfer P2P</div>
@@ -77,5 +169,6 @@ export default class P2PSender extends React.Component {
 
 P2PSender.propTypes = {
   visible: PropTypes.bool,
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
+  selectedNotes: PropTypes.array
 };
