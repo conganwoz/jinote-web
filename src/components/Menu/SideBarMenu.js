@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import dayjs from 'dayjs';
 
 import { UploadProgress } from '../Common';
+import { P2PReceiver, P2PSender } from '../DataTransfer';
 import { API_URL } from '../../env-config';
 import { db } from '../../database/db';
 import { saveNote } from '../../actions/note';
@@ -17,6 +18,8 @@ function SideBarMenu({ selectedNotes, saveNote }) {
   const [visibleModal, setVisible] = useState(false);
   const [isDownloadNotes, setIsDownloadNote] = useState(false);
   const [isFetchingCloudNotes, setFetchingCloudNotes] = useState(false);
+  const [isVisibleP2PTransder, setVisibleP2PTransfer] = useState(false);
+  const [isVisibleP2PReceiver, setVisibleP2PReceiver] = useState(false);
   const closeUploadCloud = () => setIsUploadCloud(false);
 
   const openModal = () => setVisible(true);
@@ -103,6 +106,13 @@ function SideBarMenu({ selectedNotes, saveNote }) {
       setFetchingCloudNotes(false);
     }
   };
+
+  const openModalP2PTransfer = () => setVisibleP2PTransfer(true);
+  const closeModalP2PTransfer = () => setVisibleP2PTransfer(false);
+
+  const openModalP2PReceiver = () => setVisibleP2PReceiver(true);
+  const closeModalP2PReceiver = () => setVisibleP2PReceiver(false);
+
   return (
     <>
       <div style={{ cursor: 'pointer' }}>
@@ -124,9 +134,26 @@ function SideBarMenu({ selectedNotes, saveNote }) {
                     key: '2',
                     label: 'Tải xuống note',
                     onClick: () => {
+                      if (selectedNotes?.length <= 0)
+                        return message.warning('Vui lòng chọn note bạn muốn tải xuống');
+
                       setIsDownloadNote(true);
                       openModal();
                     }
+                  },
+                  {
+                    key: '3',
+                    label: 'Chuyển dữ liệu P2P',
+                    onClick: () => {
+                      if (selectedNotes?.length <= 0)
+                        return message.warning('Vui lòng chọn note bạn muốn gửi');
+                      openModalP2PTransfer();
+                    }
+                  },
+                  {
+                    key: '4',
+                    label: 'Nhận dữ liệu P2P',
+                    onClick: openModalP2PReceiver
                   }
                 ]}
               />
@@ -186,6 +213,12 @@ function SideBarMenu({ selectedNotes, saveNote }) {
           onChange={(e) => setPassword(e?.target?.value)}
         />
       </Modal>
+      <P2PSender
+        selectedNotes={selectedNotes}
+        visible={isVisibleP2PTransder}
+        onClose={closeModalP2PTransfer}
+      />
+      <P2PReceiver visible={isVisibleP2PReceiver} onClose={closeModalP2PReceiver} />
     </>
   );
 }
