@@ -48,3 +48,96 @@
 .clear-btn:hover {
   background-color: #cf1322CC !important;
 }
+
+.main-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100vh;
+}
+
+.side-tab-container {
+  width: 300px;
+  background: #eee;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.main-tab-container {
+  flex-grow: 1;
+  height: 100vh;
+}
+
+.l-side-tab {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 10px;
+  width: 95%;
+  flex-grow: 1;
+}
+
+.l-side-tab__menu {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%
+}
+
+.menu__header {
+  flex-grow: 1;
+  flex: 1;
+}
+
+.menu__header-text {
+  font-size: 30px;
+  font-weight: 540;
+  float: left;
+}
+
+.select-all-notes {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  margin-top: 50px;
+}
+
+.select-all-notes__checkbox {
+  margin-left: 10px;
+}
+
+.notes-container {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btn-create-note {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 10px;
+  background: rgba(204,204,204,0.3);
+  cursor: pointer;
+}
+
+.btn-create-note__icon {
+  font-size: 30px;
+}
+
+.btn-create-note__text {
+  flex-grow: 1;
+  margin-left: 20px;
+}
+
+.btn-create-note__inner-text {
+  float: left;
+}

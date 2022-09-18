@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Modal, Input, message } from 'antd';
 import PropTypes from 'prop-types';
+
+import { WS_URL } from '../../env-config';
+
 let remoteConnection;
 let receiveChannel;
 
@@ -82,7 +85,7 @@ export class P2PReceiver extends Component {
   joinTunnelSocket = () => {
     const { tunnelId } = this.state;
 
-    this.tunnelSocket = new WebSocket('ws://' + 'localhost:8000' + '/ws/chat/' + tunnelId + '/');
+    this.tunnelSocket = new WebSocket(WS_URL + '/ws/chat/' + tunnelId + '/');
 
     this.tunnelSocket.onmessage = (e) => {
       const data = JSON.parse(e.data);
