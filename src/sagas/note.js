@@ -1,5 +1,6 @@
-import { call, put, takeEvery } from 'redux-saga/effects';
+import { call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 
+import { getLatestNotes } from '../utils/database';
 import { noteConstants } from '../constants/note';
 import { db } from '../database/db';
 
@@ -12,8 +13,27 @@ function* startRequest(payload) {
       break;
     }
 
+    case noteConstants.fetchNotesFromLocal: {
+      yield call(fetchNotesFromLocal, payload);
+      break;
+    }
+
     default:
       break;
+  }
+}
+
+function* fetchNotesFromLocal() {
+  try {
+    const notes = yield call(getLatestNotes, 20);
+
+    yield put({
+      type: noteConstants.fetchNotesFromLocalSuccess,
+      notes: notes || []
+    });
+  } catch (error) {
+    console.log(error);
+    yield put({ type: noteConstants.fetchNotesFromLocalError, error: error });
   }
 }
 
@@ -65,4 +85,6 @@ export function* requestNote() {
     ],
     startRequest
   );
+
+  yield takeLatest([noteConstants.fetchNotesFromLocal], startRequest);
 }

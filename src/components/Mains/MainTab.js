@@ -21,7 +21,7 @@ class MainTab extends React.Component {
   }
 
   // eslint-disable-next-line no-unused-vars
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     const { note } = this.props;
 
     if (!isEqual(note?.currentNote, prevProps?.note?.currentNote)) {
@@ -61,41 +61,21 @@ class MainTab extends React.Component {
 
     if (!currentNote)
       return (
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-          <GoNote style={{ fontSize: 300, color: 'rgba(153,153,153,0.2)' }} />
+        <div className="c-empty-work">
+          <GoNote className="c-empty-work__icon" />
         </div>
       );
 
     return (
       <div>
-        <div style={{ marginTop: 10, marginBottom: 10 }}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'flex-start',
-              alignItems: 'center'
-            }}>
-            <div style={{ marginLeft: 10 }}>
-              <span style={{ fontWeight: 700, fontStyle: 'italic' }}>Title: </span>
+        <div className="main-tab__title-input">
+          <div className="c-title-input">
+            <div className="title-text-wrapper">
+              <span className="title-text">Title: </span>
             </div>
-            <div style={{ flexGrow: 1 }}>
+            <div className="title-input-wrapper">
               <input
-                style={{
-                  width: '90%',
-                  border: 'none',
-                  outline: 'none',
-                  padding: 10,
-                  fontSize: 15
-                }}
+                className="real-input-title"
                 defaultValue={currentNote?.title}
                 value={currentNote?.title || ''}
                 autoFocus
@@ -107,14 +87,7 @@ class MainTab extends React.Component {
           </div>
         </div>
         {isStartingTinyMCE ? (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              padding: 10
-            }}>
+          <div className="mce-loading">
             <ReactLoading type="cylon" color="#ccc" />
           </div>
         ) : null}
@@ -145,25 +118,12 @@ class MainTab extends React.Component {
             this.setState({ currentNote: { ...(currentNote || {}), content: content } });
           }}
         />
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-            marginTop: 10
-          }}>
-          <div
-            onClick={clearCurrentNote}
-            className="clear-btn"
-            style={{ padding: 10, background: '#cf1322', marginRight: 10, cursor: 'pointer' }}>
-            <span style={{ color: '#fff' }}>Clear</span>
+        <div className="main-tab__footer">
+          <div onClick={clearCurrentNote} className="clear-btn-normal-state clear-btn">
+            <span className="white-text">Clear</span>
           </div>
-          <div
-            className="save-btn"
-            style={{ padding: 10, background: '#0050b3', cursor: 'pointer', marginRight: 10 }}
-            onClick={this.saveContent}>
-            <span style={{ color: '#fff' }}>Save</span>
+          <div className="save-text-normal-state save-btn" onClick={this.saveContent}>
+            <span className="white-text">Save</span>
           </div>
         </div>
       </div>
