@@ -48,18 +48,18 @@ const noteReducer = (state = initialState, action) => {
         noteData: {
           isFetching: { $set: true },
           success: { $set: false },
-          message: { $set: '' },
-          notes: { $set: action?.payload || [] }
+          message: { $set: '' }
         }
       });
     }
 
-    case noteConstants.fetchNotesFromLocalSucess: {
+    case noteConstants.fetchNotesFromLocalSuccess: {
       return update(state, {
         noteData: {
           isFetching: { $set: false },
           success: { $set: true },
-          message: { $set: "Your Notes've been loaded successfully" }
+          message: { $set: "Your Notes've been loaded successfully" },
+          notes: { $set: action?.notes || [] }
         }
       });
     }

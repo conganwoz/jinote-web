@@ -3,6 +3,7 @@ import { Modal, Divider } from 'antd';
 import PropTypes from 'prop-types';
 
 import { makeId } from '../../utils';
+import { WS_URL } from '../../env-config';
 
 let localConnection;
 let sendChannel;
@@ -37,9 +38,7 @@ export default class P2PSender extends React.Component {
         currentICECandidateEvent: null
       },
       () => {
-        this.tunnelSocket = new WebSocket(
-          'ws://' + 'localhost:8000' + '/ws/chat/' + tunnelId + '/'
-        );
+        this.tunnelSocket = new WebSocket(WS_URL + '/ws/chat/' + tunnelId + '/');
 
         this.tunnelSocket.onmessage = (e) => {
           const data = JSON.parse(e.data);

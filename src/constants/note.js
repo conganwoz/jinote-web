@@ -5,7 +5,7 @@ export const noteConstants = {
   createTempNote: 'CREATE_TEMP_NOTE',
   clearCurrentNote: 'CLEAR_CURRENT_NOTE',
   fetchNotesFromLocal: 'FETCH_NOTES_FROM_LOCAL',
-  fetchNotesFromLocalSucess: 'FETCH_NOTES_FROM_LOCAL_SUCCESS',
+  fetchNotesFromLocalSuccess: 'FETCH_NOTES_FROM_LOCAL_SUCCESS',
   fetchNotesFromLocalError: 'FETCH_NOTES_FROM_LOCAL_ERROR',
   saveNote: 'SAVE_NOTE',
   saveNoteSuccess: 'SAVE_NOTE_SUCCESS',
