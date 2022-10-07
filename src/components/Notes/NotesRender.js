@@ -5,7 +5,7 @@ import NoteItem from './NoteItem';
 
 function NotesRender({ notes, selectNote, selectedNoteIds, changeSelectedNote }) {
   return (
-    <div>
+    <div className="note-item-container">
       {notes?.map((item, index) => {
         return (
           <NoteItem
