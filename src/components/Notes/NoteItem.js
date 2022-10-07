@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Checkbox } from 'antd';
+import { Checkbox, Popover } from 'antd';
 import { AiOutlineCloudSync } from 'react-icons/ai';
 
 function Title({ title }) {
@@ -33,16 +33,26 @@ Title.propTypes = {
 
 function NoteItem({ item, selectNote, selectedNoteIds, changeSelectedNote }) {
   return (
-    <div className="c-notes">
-      <div className="c-notes__item" onClick={() => selectNote(item)}>
-        <Title title={item?.title || ''} />
-        <MetaInfo isSynced={Boolean(item.cloudId)} insertedAt={item?.insertedAt} />
+    <Popover
+      content={
+        <div
+          className="c-notes__item_preview"
+          dangerouslySetInnerHTML={{ __html: item?.content }}
+        />
+      }
+      placement="rightTop"
+      title={item?.title}>
+      <div className="c-notes">
+        <div className="c-notes__item" onClick={() => selectNote(item)}>
+          <Title title={item?.title || ''} />
+          <MetaInfo isSynced={Boolean(item.cloudId)} insertedAt={item?.insertedAt} />
+        </div>
+        <Checkbox
+          checked={selectedNoteIds?.includes(item?.id)}
+          onChange={() => changeSelectedNote(item?.id)}
+        />
       </div>
-      <Checkbox
-        checked={selectedNoteIds?.includes(item?.id)}
-        onChange={() => changeSelectedNote(item?.id)}
-      />
-    </div>
+    </Popover>
   );
 }
 
